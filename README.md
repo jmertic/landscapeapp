@@ -4,25 +4,7 @@
 
 The landscapeapp is an upstream NPM [module](https://www.npmjs.com/package/interactive-landscape) that supports building interactive landscape websites such as the [CNCF Cloud Native Landscape](https://landscape.cncf.io) ([source](https://github.com/cncf/landscape)) and the [LF Artificial Intelligence Landscape](https://landscape.lfai.foundation) ([source](https://github.com/lfai/lfai-landscape)). The application is managed by [Dan Kohn](https://www.dankohn.com) of [CNCF](https://www.cncf.io) and is under active development by [Andrey Kozlov](https://github.com/ZeusTheTrueGod) (who did most of the development to date) and [Jordi Noguera](https://jordinl.com).
 
-In addition to creating fully interactive sites, the landscapeapp builds static images on each update. See examples in [ADOPTERS.md](ADOPTERS.md). All current [Linux Foundation](https://linuxfoundation.org) landscapes are listed in [landscapes.yml](landscapes.yml).
-
-## Images
-
-The most challenging part of creating a new landscape is finding SVG images for all projects and companies. These landscapes represent a valuable resource to a community in assembling all related projects, creating a taxonomy, and providing the up-to-date logos, and unfortunately, there are no shortcuts.
-
-Do *not* try to convert PNGs to SVGs. You can't automatically go from a low-res to a high-res format, and you'll just waste time and come up with a substandard result. Instead, invest your time finding SVGs and then (when necessary) having a graphic designer recreate images when high res ones are not available.
-
-Tips for finding high quality images:
-
-- Google images is often the best way to find a good version of the logo (but ensure it's the up-to-date version). Search for [grpc logo filetype:svg](https://www.google.com/search?q=grpc+logo&tbs=ift:svg,imgo:1&tbm=isch) but substitute your project or product name for grpc. 
-- Wikipedia also is a good source for high quality logos ( search in either the main [Wikipedia](https://en.wikipedia.org/w/index.php?sort=relevance&search=svg&title=Special%3ASearch&profile=advanced&fulltext=1&advancedSearch-current=%7B%7D&ns6=1) or [Wikipedia Commons](https://commons.wikimedia.org/w/index.php?sort=relevance&search=svg&title=Special%3ASearch&profile=advanced&fulltext=1&advancedSearch-current=%7B%7D&ns0=1&ns6=1&ns12=1&ns14=1&ns100=1&ns106=1) ).
-- Also search for 'svg' in the GitHub for the project, as sometimes projects will embed them there.
-
-For new landscapes of any size, you will probably need a graphic artist to rebuild some of the logos for you. 
-
-If the project is hosted/sponsored by an organization but doesn't have a logo, best practice is to use that organization's logo with the title of the project underneath ( [example](https://landscape.cncf.io/selected=netflix-eureka) ). You can use a tool such as [Inkscape](https://inkscape.org/) to add the text.
-
-If you get an error with the image that it has a PNG embeded, you will need to find a different SVG that doesn't include a PNG or work with a graphic artist to rebuild the logo.
+In addition to creating fully interactive sites, the landscapeapp builds static images on each update. See examples in [ADOPTERS.md](ADOPTERS.md)
 
 ## SVGs Can't Include Text
 
@@ -68,7 +50,7 @@ The update server enhances the source data with the fetched data and saves the r
 ## Creating a New Landscape
 
 If you want to create an interactive landscape for your project or organization:
-1. Note ahead of time that the hardest part of building a landscape is getting hi-res images for every project. You *cannot* convert from a PNG or JPEG into an SVG. You need to get an SVG, AI, or EPS file. When those aren't available, you will  need a graphic designer to recreate several images. Don't just use an auto-tracer to try to convert PNG to SVG because there is some artistry involved in making it look good. Please review this [primer](https://www.cncf.io/blog/2019/07/17/what-image-formats-should-you-be-using-in-2019/) on image formats. 
+1. Note ahead of time that the hardest part of building a landscape is getting hi-res images for every project. You *cannot* convert from a PNG or JPEG into an SVG. You need to get an SVG, AI, or EPS file. When those aren't available, you will  need a graphic designer to recreate several images. Don't just use an auto-tracer to try to convert PNG to SVG because there is some artistry involved in making it look good. Please review this [primer](https://www.cncf.io/blog/2019/07/17/what-image-formats-should-you-be-using-in-2019/) on image formats.
 1. Create a repo `youracronym-landscape` so it's distinct from other landscapes stored in the same directory. From inside your new directory, copy over files from a simpler landscape like https://github.com/graphql/graphql-landscape with `cp -r ../graphql-landscape/* ../graphql-landscape/.github ../graphql-landscape/.gitignore ../graphql-landscape/.npmrc ../graphql-landscape/.nvmrc .`.
 2. If you're working with the [LF](https://www.linuxfoundation.org/), give admin privileges to the new repo to [dankohn](https://github.com/dankohn) and write privleges to [AndreyKozlov1984](https://github.com/AndreyKozlov1984), [jordinl83](https://github.com/jordinl83), and [CNCF-Bot](https://github.com/CNCF-Bot) and ping Dan after creating an account at [slack.cncf.io](https://slack.cncf.io). Alex Contini and Dan are available there to help you recreate SVGs based on a PNG of the company's logo, if necessary, and to fix other problems.
 2. Set the repo to only support merge commits and turn off DCO support, since it doesn't work well with the GitHub web interface:
@@ -113,7 +95,16 @@ alias yq='y remove-quotes'
 alias yp='y build && y open:dist'
 # yo does a quick build and opens up the landscape in your browser
 alias yo='y open:src'
-alias a='for path in /Users/your-username/dev/{landscapeapp,cdf-landscape,lfai-landscape}; do echo $path; git -C $path pull -p; done; npm --prefix /Users/your-username/dev/landscapeapp update;'
+# yc does a full clean out of the local npm modules and the yf. Use only if you are getting weird errors on yf
+alias yc='PROJECT_PATH=$PWD rm -rf node_modules && npm install && yf'
+```
+
+Reload with `. ~/.bash_profile` and then use `y open:src`, `yf`, etc. to run functions on the landscape in your current directory.
+
+If you want to fetch updates to the landscapeapp and both the CNCF and LFAI landscapes and update packages on all three, this alias for your `~/.bash_profile` will do so:
+
+```sh
+alias all='for path in /Users/your-username/dev/{landscapeapp,landscape,lfdl-landscape}; do git -C $path pull -p; npm --prefix $path run latest; done;'
 
 ```
 Reload with `. ~/.bash_profile` and then use `yo`, `yf`, etc. to run functions on the landscape in your landscape directory. `a` will do a git pull on each of the project directories you specify and install any necessary node modules for landscapeapp.
@@ -167,7 +158,7 @@ You can embed the landscape in a website in a few different ways...
 - If you want to embed the card mode for listing a category of entries ( for example members in a foundation or entries in a certain program ), you can do:
 
 ```
-<!-- Embed list of all Open Mainframe Project members -->  
+<!-- Embed list of all Open Mainframe Project members -->
 <iframe src="https://landscape.openmainframeproject.org/category=open-mainframe-project-member-company&amp;format=logo-mode&amp;grouping=category&amp;embed=yes" frameborder="0" id="landscape" scrolling="no" style="width: 1px; min-width: 100%; opacity: 1; visibility: visible; overflow: hidden; height: 1717px;"></iframe>
 <script src="https://landscape.openmainframeproject.org/iframeResizer.js"></script>
 ```
